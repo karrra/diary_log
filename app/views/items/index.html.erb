@@ -1,0 +1,34 @@
+<div class="nav">
+  <h2>账单明细</h2>
+</div>
+<div class="items">
+  <% if @items.any? %>
+    <table class="table table-condensed">
+      <tbody>
+        <% @items.each do |date, items| %>
+          <tr>
+            <td colspan="2">
+              <h3><%= date %></h3>
+              <h5>Total: <%= items.sum(&:amount) %> 元</h5>
+              <table class="table table-striped">
+                <% items.each do |item| %>
+                  <tr class="item" data-id="<%= item.id %>">
+                    <td><h4><%= item.memo %></h4></td>
+                    <td class="text-right">
+                      <span>
+                        <%= item.amount %> 元<br />
+                        <small><%= item.created_at.strftime('%H:%M') %></small>
+                      </span>
+                    </td>
+                  </tr>
+                <% end %>
+              </table>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>什么都没有，快去记一笔吧！</p>
+  <% end %>
+</div>

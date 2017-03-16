@@ -1,0 +1,8 @@
+<div class="header text-center">
+  <h1>账单统计</h1>
+  <h2><%= Time.now.strftime('%_m') %>月</h2>
+  <h5>总 <%= @user.bill.month_total rescue 0 %>元</h5>
+</div>
+
+<canvas id="myChart" width="400" height="400"></canvas>
+<%= hidden_field_tag 'open_id', params[:open_id] %>
