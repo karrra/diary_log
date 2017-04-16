@@ -6,4 +6,12 @@ module ApplicationHelper
       nil
     end
   end
+
+  def month_format(datetime)
+    if datetime.present?
+      datetime.strftime('%Y年%m月')
+    else
+      nil
+    end
+  end
 end

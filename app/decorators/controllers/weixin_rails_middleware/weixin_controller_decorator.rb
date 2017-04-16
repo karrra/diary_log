@@ -119,10 +119,11 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       str = <<-str
 ===== SUCCESS =====
 【时间】#{item.created_at.strftime('%m-%d %H:%m')}
-【支出】#{item.amount}
-【类别】#{item.item_type}
+【金额】#{item.amount.abs}
+【类别】#{t("items.item_type.#{item.item_type}")}
 【备注】#{item.memo}
-==== 本月支出 #{item.bill.month_total} ====
+==== 本月支出 #{item.bill.month_total_expense.abs} 元 ====
+==== 本月收入 #{item.bill.month_total_income} 元 ====
 输入Q即可删除最后一条记录
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口

@@ -1,28 +1,9 @@
-init_chart = ()->
-  ctx = $("#myChart")
-
-  $.get("/items/fetch_data", {open_id: $('#open_id').val()}, (data)->
-    new Chart(ctx,{
-      type: 'pie',
-      data: {
-        labels: ["其他", "餐饮", "购物", "家居", "交通", "休闲"],
-        datasets: [
-            {
-                data: data,
-                backgroundColor: ["#d23838", "#cc77b8", "#e8dd23", "#2479d0", "#64d4a3", "#64d1d4"]
-            }]
-      },
-      options: {
-        legend: {
-          position: 'bottom'
-        }
-        tooltips: {
-          intersect: false,
-          displayColors: false
-        }
-      }
-    })
-  )
+init_data = ()->
+  $.ajax
+    url: "/items/fetch_data"
+    data: {open_id: $('#open_id').val(), month: $("#month").val()}
+    success: (data)->
+      eval(data)
 
 $ ->
   $(document).on 'touchstart', 'tr.item', ()->
@@ -30,4 +11,8 @@ $ ->
     window.location = "/items/#{item_id}/edit"
 
   if $('#myChart').length > 0
-    init_chart()
+    init_data()
+
+  $(document).on 'touchstart', '.dropdown-menu li', ()->
+    $("#month").val($(this).text())
+    init_data()

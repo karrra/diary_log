@@ -4,18 +4,20 @@ class Bill < ActiveRecord::Base
 
   def add_item(content)
     memo, amount = content.split(' ')
-    return false if amount.to_i.zero?
+    return false unless amount
+    item = Item.new(bill_id: self.id, memo: memo)
     data = YAML.load_file(Rails.root.join('config/dictionary.yml'))['item_type']
-    result = data.find{|k, v| memo.in? v}.first rescue nil
-    item = Item.create(bill_id: self.id, memo: memo, amount: amount)
-    if result.present?
-      item.update(item_type: result)
-    else
-      item.update(item_type: 0)
-    end
+    i_type = data.find{|k, v| memo.in? v}.first rescue nil
+    i_type = i_type.present? ? i_type : 0
+    amount = i_type == 'incomes' ? amount : amount.to_f * -1
+    item.update(item_type: i_type, amount: amount)
   end
 
-  def month_total
-    items.month.sum(:amount)
+  def month_total_expense
+    items.expense.month.sum(:amount)
+  end
+
+  def month_total_income
+    items.incomes.month.sum(:amount)
   end
 end

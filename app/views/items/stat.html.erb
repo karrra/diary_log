@@ -1,8 +1,23 @@
-<div class="header text-center">
-  <h1>账单统计</h1>
-  <h2><%= Time.now.strftime('%_m') %>月</h2>
-  <h5>总 <%= @user.bill.month_total rescue 0 %>元</h5>
+<div class="header">
+  <div class="month col-xs-6"></div>
+  <div class="col-xs-6">
+    <div class="dropdown text-right">
+      <button type="button" id="month_change" data-toggle="dropdown">
+        <i class="fa fa-calendar fa-2x"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="month_change">
+        <% 5.times.each do |i| %>
+          <li><%= month_format(Time.now - i.month) %></li>
+        <% end %>
+      </ul>
+    </div>
+    <div class="total_amount">
+      <h4>总收入 <span class="incomes"></span>元</h4>
+      <h4>总支出 <span class="expense"></span>元</h4>
+    </div>
+  </div>
 </div>
 
 <canvas id="myChart" width="400" height="400"></canvas>
 <%= hidden_field_tag 'open_id', params[:open_id] %>
+<%= hidden_field_tag 'month', @month %>

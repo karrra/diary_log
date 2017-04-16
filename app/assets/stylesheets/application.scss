@@ -1,3 +1,30 @@
 @import "bootstrap";
+@import "font-awesome-sprockets";
 @import "font-awesome";
 @import "items";
+
+i {
+  margin-right: 5px;
+}
+
+// Item stat
+.header {
+  min-height: 150px;
+  margin-top: 8%;
+}
+.header .month {
+  font-size: 3em;
+}
+.header ul {
+  padding: 5px;
+  min-width: 100px;
+}
+.header li {
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px solid #eae2e2;
+}
+.header .total_amount {
+  margin-top: 5%;
+  text-align: right;
+}

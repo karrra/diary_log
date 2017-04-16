@@ -1,6 +1,6 @@
 class ItemsController < ApplicationController
   before_action :get_item, except: [:index, :stat, :fetch_data]
-  before_action :get_bill, only: [:index, :stat, :fetch_data]
+  before_action :get_user, only: [:index, :stat, :fetch_data]
 
   def index
     @items = @user.items.group_by{|i| i.created_at.to_date} rescue []
@@ -11,7 +11,7 @@ class ItemsController < ApplicationController
 
   def update
     if @item.update(item_params)
-      redirect_to items_url, notice: '修改成功'
+      redirect_to items_url
     else
       render 'edit'
     end
@@ -19,7 +19,7 @@ class ItemsController < ApplicationController
 
   def destroy
     if @item.destroy
-      redirect_to items_url, notice: '删除成功'
+      redirect_to items_url
     else
       render 'edit'
     end
@@ -29,14 +29,23 @@ class ItemsController < ApplicationController
   end
 
   def fetch_data
-    items = @user.bill.items.month.group(:item_type).sum(:amount)
-    render json: Item.item_types.map{|k, v| items[v].to_f}
+    @month = params[:month].present? ? params[:month] : Time.now.strftime('%Y年%m月')
+    items = get_current_month_items(@month)
+    result = items.expense.group(:item_type).sum(:amount)
+    @total_incomes = items.incomes.sum(:amount)
+    @total_expense = items.expense.sum(:amount).abs
+    @label = result.keys.map{|k| t("items.item_type.#{Item.item_types.key(k)}")}
+    @record = result.keys.map{|i| result[i] && result[i].to_f.abs}.compact
   end
 
   private
-  def get_bill
+  def get_user
     session[:open_id] ||= params[:open_id]
     @user = User.where(open_id: session[:open_id]).first
+  end
+
+  def get_current_month_items(month)
+    @user.bill.items.month(month)
   end
 
   def get_item
