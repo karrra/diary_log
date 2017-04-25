@@ -1,3 +1,21 @@
-// Place all the styles related to the items controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+// Item stat
+.header {
+  min-height: 150px;
+  margin-top: 8%;
+}
+.header .month {
+  font-size: 3em;
+}
+.header ul {
+  padding: 5px;
+  min-width: 100px;
+}
+.header li {
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px solid #eae2e2;
+}
+.header .total_amount {
+  margin-top: 5%;
+  text-align: right;
+}

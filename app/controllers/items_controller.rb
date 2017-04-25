@@ -1,6 +1,5 @@
 class ItemsController < ApplicationController
   before_action :get_item, except: [:index, :stat, :fetch_data]
-  before_action :get_user, only: [:index, :stat, :fetch_data]
 
   def index
     @items = @user.items.group_by{|i| i.created_at.to_date} rescue []
@@ -39,11 +38,6 @@ class ItemsController < ApplicationController
   end
 
   private
-  def get_user
-    session[:open_id] ||= params[:open_id]
-    @user = User.where(open_id: session[:open_id]).first
-  end
-
   def get_current_month_items(month)
     @user.bill.items.month(month)
   end

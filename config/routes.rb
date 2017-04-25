@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
-  resources :items, except: [:new, :create] do
+  resources :items, except: [:new, :create, :show] do
     get :stat, on: :collection
     get :fetch_data, on: :collection
   end
+  resources :diary_logs, except: [:new, :create, :show]
   mount WeixinRailsMiddleware::Engine, at: "/"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

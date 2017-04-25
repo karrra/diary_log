@@ -1,0 +1,30 @@
+<div class="logs">
+  <% if @logs.any? %>
+    <table class="table table-condensed">
+      <tbody>
+        <% @logs.each do |item| %>
+          <tr>
+            <td>
+              <div class="main">
+                <%= simple_format(item.content) %>
+              </div>
+              <div class="footer">
+                <%= time_format(item.created_at) %>
+                <span class="actions">
+                  <%= link_to edit_diary_log_path(item) do %>
+                    <%= icon('edit') %>
+                  <% end %>
+                  <%= link_to diary_log_path(item), method: :DELETE, data: {confirm: '确定要删除?'} do %>
+                    <%= icon('trash') %>
+                  <% end %>
+                </span>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>什么都没有，快去记一笔吧！</p>
+  <% end %>
+</div>

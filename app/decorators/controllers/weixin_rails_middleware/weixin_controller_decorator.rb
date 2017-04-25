@@ -15,6 +15,9 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       user = User.where(open_id: @open_id).first_or_create
       bill = Bill.where(user_id: user.id).first_or_create
       case
+      when @keyword.match(/Po/)
+        user.add_diary(@keyword)
+        create_diary_response
       when @keyword.match(/[Qq]/)
         remove_item(bill.items.first)
       when @keyword.match(/[Mm]/)
@@ -167,4 +170,11 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       generate_article('账单统计', '账单统计', nil, "#{@base_url}/items/stat?open_id=#{@open_id}")
     end
 
+    def create_diary_response
+      str = <<-str
+心情已记录!
+<a href='#{@base_url}/diary_logs?open_id=#{@open_id}'>心情列表</a>快捷入口
+      str
+      reply_text_message(str)
+    end
 end
