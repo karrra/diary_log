@@ -1,4 +1,4 @@
-root = "/var/www/my_bill/current"
+root = "/var/www/diary_logs/current"
 working_directory root
 
 pid "#{root}/tmp/pids/unicorn.pid"
