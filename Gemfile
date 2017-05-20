@@ -14,6 +14,7 @@ gem 'font-awesome-sass', '~> 4.7.0'
 gem 'simple_form'
 gem 'weixin_rails_middleware'
 gem 'unicorn'
+gem 'newrelic_rpm'
 
 group :development, :test do
   gem 'byebug'
