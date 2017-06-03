@@ -3,7 +3,7 @@
 # 2, @weixin_public_account: 如果配置了public_account_class选项,则会返回当前实例,否则返回nil.
 # 3, @keyword: 目前微信只有这三种情况存在关键字: 文本消息, 事件推送, 接收语音识别结果
 WeixinRailsMiddleware::WeixinController.class_eval do
-  before_action :check_session_timestamp, :get_open_id, :get_base_url
+  before_action :get_open_id, :get_base_url
 
   def reply
     render xml: send("response_#{@weixin_message.MsgType}_message", {})
@@ -12,7 +12,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
   private
 
     def response_text_message(options={})
-      set_session_timestamp
+      check_timestamp
       user = User.where(open_id: @open_id).first_or_create
       bill = Bill.where(user_id: user.id).first_or_create
       case
@@ -104,12 +104,12 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       @base_url = request.base_url
     end
 
-    def check_session_timestamp
-      return if session[:timestamp] == params[:timestamp]
-    end
-
-    def set_session_timestamp
-      session[:timestamp] = params[:timestamp]
+    def check_timestamp
+      if Rails.cache.read("#{@open_id}_msg_timestamp") == @weixin_message.CreateTime
+        return ''
+      else
+        Rails.cache.write("#{@open_id}_msg_timestamp", @weixin_message.CreateTime)
+      end
     end
 
     def reply_subscribe_msg

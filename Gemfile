@@ -18,6 +18,7 @@ gem 'newrelic_rpm'
 gem 'rails-i18n'
 gem 'momentjs-rails', '>= 2.9.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
+gem 'redis-rails'
 
 group :development, :test do
   gem 'byebug'
