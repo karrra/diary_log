@@ -9,17 +9,17 @@
           <tr>
             <td colspan="2">
               <h3><%= date %></h3>
-              <h5>总支出: <%= items.select{|i| i.item_type != 'incomes'}.sum(&:amount).abs %> 元</h5>
+              <h5>总支出: <%= items.select{|i| i.expense?}.sum(&:amount) %> 元</h5>
               <table class="table table-striped">
                 <% items.each do |item| %>
                   <tr class="item" data-id="<%= item.id %>">
                     <td>
-                      <h4><%= item_type_icon(item.item_type) %><%= item.memo %></h4>
+                      <h4><%= item_type_icon(item.parent_type_name) %><%= item.memo %></h4>
                     </td>
                     <td class="text-right">
                       <span>
                         <%= item.amount %> 元<br />
-                        <small><%= item.created_at.strftime('%H:%M') %></small>
+                        <small><%= item.record_at.strftime('%H:%M') %></small>
                       </span>
                     </td>
                   </tr>

@@ -15,4 +15,6 @@
 //= require turbolinks
 //= require Chart.min
 //= require bootstrap
+//= require moment
+//= require bootstrap-datetimepicker
 //= require_tree .

@@ -1,16 +1,26 @@
+include QueryItemType
+
 class Bill < ActiveRecord::Base
   belongs_to :user
   has_many :items
 
   def add_item(content)
+    i_type = QueryItemType.get(content)
+    return false unless i_type
     memo, amount = content.split(' ')
     return false unless amount
-    item = Item.new(bill_id: self.id, memo: memo)
-    data = YAML.load_file(Rails.root.join('config/dictionary.yml'))['item_type']
-    i_type = data.find{|k, v| memo.in? v}.first rescue nil
-    i_type = i_type.present? ? i_type : 0
-    amount = i_type == 'incomes' ? amount : amount.to_f * -1
-    item.update(item_type: i_type, amount: amount)
+
+    Item.create(
+      bill_id: self.id,
+      memo: memo,
+      parent_type_id: i_type[:parent].id,
+      parent_type_name: i_type[:parent].name,
+      child_type_id: i_type[:child].id,
+      child_type_name: i_type[:child].name,
+      record_at: Time.now,
+      inorout: i_type[:incomes],
+      amount: amount
+    )
   end
 
   def month_total_expense

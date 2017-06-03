@@ -1,20 +1,16 @@
 class Item < ActiveRecord::Base
-  default_scope {order('created_at desc')}
+  default_scope {order('record_at desc')}
   belongs_to :bill
-  scope :expense, -> {where.not(item_type: 6)}
+  belongs_to :parent_type, foreign_key: 'parent_type_id', class_name: 'ItemType'
+  belongs_to :child_type, foreign_key: 'child_type_id', class_name: 'ItemType'
 
-  enum item_type: {
-    other:     0,
-    food:      1,
-    shopping:  2,
-    living:    3,
-    transport: 4,
-    leisure:   5,
-    incomes:   6
+  enum inorout: {
+    expense: 0,
+    incomes: 1
   }
 
   def self.month(month=nil)
     month ||= Time.now.strftime('%Y年%m月')
-    where("strftime('%Y年%m月', items.created_at) = ?", month)
+    where("strftime('%Y年%m月', items.record_at) = ?", month)
   end
 end

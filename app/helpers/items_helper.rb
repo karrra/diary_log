@@ -2,17 +2,21 @@ module ItemsHelper
   def item_type_icon(item_type)
     icon =
       case item_type
-      when 'food'
+      when '餐饮'
         'fa-cutlery'
-      when 'shopping'
+      when '购物消费'
         'fa-shopping-cart'
-      when 'living'
+      when '居家生活'
         'fa-home'
-      when 'transport'
+      when '交通费'
         'fa-train'
-      when 'leisure'
+      when '休闲娱乐'
         'fa-music'
-      when 'incomes'
+      when '健康医疗'
+        'fa-hospital-o'
+      when '文化教育'
+        'fa-book'
+      when '收入'
         'fa-money'
       else
         'fa-credit-card'

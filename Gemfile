@@ -15,6 +15,9 @@ gem 'simple_form'
 gem 'weixin_rails_middleware'
 gem 'unicorn'
 gem 'newrelic_rpm'
+gem 'rails-i18n'
+gem 'momentjs-rails', '>= 2.9.0'
+gem 'bootstrap3-datetimepicker-rails', '~> 4.17.47'
 
 group :development, :test do
   gem 'byebug'

@@ -1,10 +1,12 @@
 <div class="nav">
   <h2 class="text-center">修改明细</h2>
   <%= simple_form_for @item, html: { class: 'form-horizontal' }, wrapper: :horizontal_form do |f| %>
-    <%= f.input :item_type, collection: Item.item_types.keys %>
-    <%= f.input :amount %>
-    <%= f.input :memo %>
-    <%= f.submit '保存', class: 'btn btn-primary' %>
+    <%= f.association :parent_type, collection: ItemType.parents_type, label: '一级分类' %>
+    <%= f.association :child_type, label: '二级分类', readonly: true %>
+    <%= f.input :amount, label: '金额' %>
+    <%= f.input :memo, label: '备注' %>
+    <%= f.input :record_at, as: :string, label: '消费时间' %>
+    <%= f.submit '保存', class: 'btn btn-primary submit_btn' %>
     <%= link_to '删除', item_path(@item), method: 'delete', data: {confirm: '确定要删除?'}, class: 'btn btn-danger' %>
   <% end %>
 </div>

@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
   resources :items, except: [:new, :create, :show] do
-    get :stat, on: :collection
-    get :fetch_data, on: :collection
+    collection do
+      get :stat
+      get :fetch_data
+      get :get_children_type
+    end
   end
   resources :diary_logs, except: [:new, :create, :show]
   mount WeixinRailsMiddleware::Engine, at: "/"
