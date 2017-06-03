@@ -9,19 +9,13 @@ class ItemsController < ApplicationController
   end
 
   def update
-    if @item.update(item_params)
-      redirect_to items_url
-    else
-      render 'edit'
-    end
+    @item.update(item_params)
+    @items = @user.items.group_by{|i| i.record_at.to_date} rescue []
   end
 
   def destroy
-    if @item.destroy
-      redirect_to items_url
-    else
-      render 'edit'
-    end
+    @item.destroy
+    @items = @user.items.group_by{|i| i.record_at.to_date} rescue []
   end
 
   def stat

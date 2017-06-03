@@ -8,7 +8,10 @@ init_data = ()->
 $ ->
   $(document).on 'touchstart', 'tr.item span', ()->
     item_id = $(this).parents('tr').data('id')
-    window.location = "/items/#{item_id}/edit"
+    $.ajax
+      url: "/items/#{item_id}/edit"
+      success: (data)->
+        eval(data)
 
   if $('#myChart').length > 0
     init_data()
@@ -16,12 +19,6 @@ $ ->
     $(document).on 'touchstart', '.dropdown-menu li', ()->
       $("#month").val($(this).text())
       init_data()
-
-  $('#item_record_at').datetimepicker({
-    showClear: true,
-    showTodayButton: true,
-    format: 'YYYY-MM-DD HH:mm'
-  })
 
   $(document).on 'change', '#item_parent_type_id', ()->
     $.get('/items/get_children_type', {parent_id: $(this).val()}, (data)->

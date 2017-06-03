@@ -3,34 +3,11 @@
 </div>
 <div class="items">
   <% if @items.any? %>
-    <table class="table table-condensed">
-      <tbody>
-        <% @items.each do |date, items| %>
-          <tr>
-            <td colspan="2">
-              <h3><%= date %></h3>
-              <h5>总支出: <%= items.select{|i| i.expense?}.sum(&:amount) %> 元</h5>
-              <table class="table table-striped">
-                <% items.each do |item| %>
-                  <tr class="item" data-id="<%= item.id %>">
-                    <td>
-                      <h4><%= item_type_icon(item.parent_type_name) %><%= item.memo %></h4>
-                    </td>
-                    <td class="text-right">
-                      <span>
-                        <%= item.amount %> 元<br />
-                        <small><%= item.record_at.strftime('%H:%M') %></small>
-                      </span>
-                    </td>
-                  </tr>
-                <% end %>
-              </table>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <%= render 'list' %>
   <% else %>
     <p>什么都没有，快去记一笔吧！</p>
   <% end %>
 </div>
+
+<div id="editModal" class="modal fade" tabindex="-1" role="dialog">
+</div><!-- /.modal -->
