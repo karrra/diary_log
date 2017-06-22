@@ -12,7 +12,6 @@ WeixinRailsMiddleware::WeixinController.class_eval do
   private
 
     def response_text_message(options={})
-      check_timestamp
       user = User.where(open_id: @open_id).first_or_create
       bill = Bill.where(user_id: user.id).first_or_create
       case
@@ -24,7 +23,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       when @keyword.match(/[Mm]/)
         menu_response
       else
-        if bill.add_item(@keyword)
+        if bill.add_item(@keyword, @weixin_message.MsgId)
           item = bill.items.first
           add_item_response(item)
         else
@@ -102,14 +101,6 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
     def get_base_url
       @base_url = request.base_url
-    end
-
-    def check_timestamp
-      if Rails.cache.read("#{@open_id}_msg_timestamp") == @weixin_message.CreateTime
-        return ''
-      else
-        Rails.cache.write("#{@open_id}_msg_timestamp", @weixin_message.CreateTime)
-      end
     end
 
     def reply_subscribe_msg
