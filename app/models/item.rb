@@ -13,4 +13,8 @@ class Item < ActiveRecord::Base
     month ||= Time.now.strftime('%Y年%m月')
     where("strftime('%Y年%m月', items.record_at) = ?", month)
   end
+
+  def self.week
+    where("strftime('%W', items.record_at) = ?", Time.now.strftime('%W'))
+  end
 end

@@ -22,6 +22,8 @@ WeixinRailsMiddleware::WeixinController.class_eval do
         remove_item(bill.items.first)
       when @keyword.match(/[Mm]/)
         menu_response
+      when @keyword.match(/[Rr]/)
+        weekly_report(bill)
       else
         if bill.add_item(@keyword, @weixin_message.MsgId)
           item = bill.items.first
@@ -105,13 +107,15 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
     def reply_subscribe_msg
       str = <<-str
-欢迎关注我的账单
+欢迎关注懒人账单
 ================
 按以下格式记账:
 早餐 10
 打车 20
 淘宝 50
-输入Q即可删除最后一条记录
+================
+输入Q即可删除上一条记录
+输入R即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
@@ -125,9 +129,10 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 【金额】#{item.amount}
 【类别】#{item.parent_type_name} - #{item.child_type_name}
 【备注】#{item.memo}
-==== 本月支出 #{item.bill.month_total_expense} 元 ====
-==== 本月收入 #{item.bill.month_total_income} 元 ====
-输入Q即可删除最后一条记录
+==== 本月支出 #{item.bill.total_expense} 元 ====
+==== 本月收入 #{item.bill.total_incomes} 元 ====
+输入Q即可删除上一条记录
+输入R即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
@@ -142,7 +147,9 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 早餐 10
 打车 20
 淘宝 50
-输入Q即可删除最后一条记录
+================
+输入Q即可删除上一条记录
+输入R即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
@@ -174,6 +181,23 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       str = <<-str
 心情已记录!
 <a href='#{@base_url}/diary_logs?open_id=#{@open_id}'>心情列表</a>快捷入口
+      str
+      reply_text_message(str)
+    end
+
+    def weekly_report(bill)
+      str = <<-str
+===== Weekly Report =====
+【时间】#{Time.now.strftime("第%U周")}
+【支出】#{bill.total_expense('week')} 元
+【收入】#{bill.total_incomes('week')} 元
+
+#{bill.weekly_report}
+=====================
+输入Q即可删除上一条记录
+输入R即可查看周报
+输入M即可召唤菜单
+<a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
       reply_text_message(str)
     end

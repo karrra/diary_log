@@ -27,11 +27,26 @@ class Bill < ActiveRecord::Base
     end
   end
 
-  def month_total_expense
-    items.expense.month.sum(:amount)
+  def total_expense(type='month')
+    if type == 'month'
+      items.expense.month.sum(:amount)
+    elsif type == 'week'
+      items.expense.week.sum(:amount)
+    end
   end
 
-  def month_total_income
-    items.incomes.month.sum(:amount)
+  def total_incomes(type='month')
+    if type == 'month'
+      items.incomes.month.sum(:amount)
+    elsif type == 'week'
+      items.incomes.week.sum(:amount)
+    end
+  end
+
+  def weekly_report
+    group_items = items.expense.week.select(:parent_type_name, :amount).group_by(&:parent_type_name)
+    group_items.map do |k, v|
+      "#{k}: #{v.sum(&:amount).round(2)} 元"
+    end.join("\n")
   end
 end
