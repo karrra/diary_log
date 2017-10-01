@@ -1,16 +1,17 @@
-root = "/var/www/diary_logs/current"
-working_directory root
-
-pid "#{root}/tmp/pids/unicorn.pid"
-
-stderr_path "#{root}/log/unicorn.log"
-stdout_path "#{root}/log/unicorn.log"
+# set path to application
+app_dir = "/home/deploy/diary_logs"
+shared_dir = "#{app_dir}/shared"
+working_directory "#{app_dir}/current"
 
 worker_processes 1
 timeout 30
 preload_app true
 
-listen '/tmp/unicorn.spui.sock', backlog: 64
+pid "#{shared_dir}/tmp/pids/unicorn.pid"
+listen "#{shared_dir}/tmp/sockets/unicorn.sock", backlog: 64
+
+stderr_path "#{shared_dir}/log/unicorn.log"
+stdout_path "#{shared_dir}/log/unicorn.log"
 
 before_fork do |server, worker|
   Signal.trap 'TERM' do
