@@ -1,8 +1,9 @@
 <table class="table table-condensed">
   <tbody>
-    <% @items.each do |date, items| %>
+    <% @item_keys.each do |date| %>
       <tr>
         <td colspan="2">
+          <% items = @items[date] %>
           <h3><%= date %></h3>
           <h5>总支出: <%= items.select{|i| i.expense?}.sum(&:amount) %> 元</h5>
           <table class="table table-striped">

@@ -6,6 +6,14 @@ init_data = ()->
       eval(data)
 
 $ ->
+  if $('.pagination').length > 0
+    $(window).scroll ->
+      url = $('.pagination .next_page').attr('href')
+      if url && $(window).scrollTop() > $(document).height() - $(window).height() - 140
+        console.info url
+        $('.pagination').text('fetching data.....')
+        $.getScript(url)
+
   $(document).on 'touchstart', 'tr.item span', ()->
     item_id = $(this).parents('tr').data('id')
     $.ajax

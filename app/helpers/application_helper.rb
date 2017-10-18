@@ -9,7 +9,7 @@ module ApplicationHelper
 
   def month_format(datetime)
     if datetime.present?
-      datetime.strftime('%Y年%m月')
+      datetime.strftime('%Y/%m')
     else
       nil
     end

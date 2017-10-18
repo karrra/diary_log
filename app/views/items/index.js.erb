@@ -1,0 +1,6 @@
+$('.items').append("<%=j render('list') %>")
+<% if @item_keys.next_page %>
+  $('.pagination').replaceWith("<%= j will_paginate @item_keys %>")
+<% else %>
+  $('.pagination').remove();
+<% end %>

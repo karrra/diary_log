@@ -9,12 +9,13 @@ class Item < ActiveRecord::Base
     incomes: 1
   }
 
-  def self.month(month=nil)
-    month ||= Time.now.strftime('%Y年%m月')
-    where("strftime('%Y年%m月', items.record_at) = ?", month)
+  def self.month(date=nil)
+    date ||= Date.today
+    where('extract(year from record_at) = ? AND extract(month from record_at) = ?', date.year, date.month)
   end
 
   def self.week
-    where("strftime('%W', items.record_at) = ?", Time.now.strftime('%W'))
+    date = Date.today
+    where('extract(year from record_at) = ? AND extract(week from record_at) = ?', date.year, date.cweek)
   end
 end
