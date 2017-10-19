@@ -18,4 +18,8 @@ class Item < ActiveRecord::Base
     date = Date.today
     where('extract(year from record_at) = ? AND extract(week from record_at) = ?', date.year, date.cweek)
   end
+
+  def self.year
+    where('extract(year from record_at) = ?', Date.today.year)
+  end
 end

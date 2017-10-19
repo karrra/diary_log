@@ -3,6 +3,11 @@ class ItemsController < ApplicationController
 
   def index
     get_items
+    add_activity({
+      action: 'Get',
+      ip: request.remote_ip,
+      detail: 'get items list'
+    })
   end
 
   def edit
@@ -11,14 +16,29 @@ class ItemsController < ApplicationController
   def update
     @item.update(item_params)
     get_items
+    add_activity({
+      action: 'Update',
+      ip: request.remote_ip,
+      detail: 'update item'
+    })
   end
 
   def destroy
     @item.destroy
     get_items
+    add_activity({
+      action: 'Destroy',
+      ip: request.remote_ip,
+      detail: 'destroy item'
+    })
   end
 
   def stat
+    add_activity({
+      action: 'Get',
+      ip: request.remote_ip,
+      detail: 'get items stat'
+    })
   end
 
   def fetch_data
@@ -48,5 +68,15 @@ class ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(:parent_type_name, :parent_type_id, :child_type_name, :child_type_id, :amount, :memo, :record_at)
+  end
+
+  def add_activity(options)
+    if @user.present?
+      @user.user_activities.create(
+        action: options[:action],
+        ip_address: options[:ip],
+        detail: options[:detail]
+      )
+    end
   end
 end

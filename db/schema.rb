@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170608100039) do
+ActiveRecord::Schema.define(version: 20171018075207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "bills", force: :cascade do |t|
-    t.string   "user_id"
+    t.text     "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20170608100039) do
   end
 
   create_table "item_types", force: :cascade do |t|
-    t.string   "name"
+    t.text     "name"
     t.integer  "level"
     t.integer  "parent_id"
     t.datetime "created_at", null: false
@@ -40,21 +40,30 @@ ActiveRecord::Schema.define(version: 20170608100039) do
   create_table "items", force: :cascade do |t|
     t.integer  "bill_id"
     t.integer  "item_type"
-    t.string   "memo"
+    t.text     "memo"
     t.decimal  "amount",           precision: 6, scale: 1, default: 0.0
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
     t.integer  "parent_type_id"
-    t.string   "parent_type_name"
+    t.text     "parent_type_name"
     t.integer  "child_type_id"
-    t.string   "child_type_name"
+    t.text     "child_type_name"
     t.datetime "record_at"
     t.integer  "inorout"
-    t.string   "msg_id"
+    t.text     "msg_id"
+  end
+
+  create_table "user_activities", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "action"
+    t.string   "ip_address"
+    t.text     "detail"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "open_id"
+    t.text     "open_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
