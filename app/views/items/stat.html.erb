@@ -7,7 +7,7 @@
       </button>
       <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="month_change">
         <% 5.times.each do |i| %>
-          <li><%= month_format(Time.now - i.month) %></li>
+          <li><%= month_format(Time.current - i.month) %></li>
         <% end %>
       </ul>
     </div>

@@ -1,5 +1,5 @@
 class ItemsController < ApplicationController
-  before_action :get_item, except: [:index, :stat, :fetch_data, :get_children_type]
+  before_action :get_item, except: [:index, :stat, :fetch_data, :get_children_type, :annual_report]
 
   def index
     get_items
@@ -14,7 +14,8 @@ class ItemsController < ApplicationController
   end
 
   def update
-    @item.update(item_params)
+    @item.attributes = item_params
+    set_inorout(@item)
     get_items
     add_activity({
       action: 'Update',
@@ -42,7 +43,7 @@ class ItemsController < ApplicationController
   end
 
   def fetch_data
-    @month = params[:month].present? ? params[:month] : Time.now.strftime('%Y/%m')
+    @month = params[:month].present? ? params[:month] : Time.current.strftime('%Y/%m')
     items = @user.bill.items.month(Date.parse(@month))
     result = items.expense.group_by(&:parent_type_name)
     @total_incomes = items.incomes.sum(:amount)
@@ -54,6 +55,18 @@ class ItemsController < ApplicationController
   def get_children_type
     @result = ItemType.where(parent_id: params[:parent_id]).uniq.pluck(:id, :name)
     render json: @result
+  end
+
+  def annual_report
+    items = @user.items.year
+    monthly_data = items.group_by{|i| i.record_at.strftime('%b')}.reverse_each.to_h
+    @total_expense = items.expense.sum(:amount)
+    @total_incomes = items.incomes.sum(:amount)
+    @monthly = {
+      labels: monthly_data.keys,
+      expense: monthly_data.values.map{|i| i.inject(0){|sum, item| item.expense? ? sum + item.amount : sum}},
+      incomes: monthly_data.values.map{|i| i.inject(0){|sum, item| item.incomes? ? sum + item.amount : sum}}
+    }
   end
 
   private
@@ -78,5 +91,10 @@ class ItemsController < ApplicationController
         detail: options[:detail]
       )
     end
+  end
+
+  def set_inorout(item)
+    item.inorout = item.parent_type_name == '收入' ? 'incomes' : 'expense'
+    item.save
   end
 end

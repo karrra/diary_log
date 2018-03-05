@@ -4,10 +4,12 @@ Rails.application.routes.draw do
       get :stat
       get :fetch_data
       get :get_children_type
+      get :annual_report
     end
   end
   resources :diary_logs, except: [:new, :create, :show]
   mount WeixinRailsMiddleware::Engine, at: "/"
+  get 'report' => 'page#report'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

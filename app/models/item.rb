@@ -9,17 +9,22 @@ class Item < ActiveRecord::Base
     incomes: 1
   }
 
+  def self.year
+    where('record_at > ?', Date.current - 12.months)
+  end
+
   def self.month(date=nil)
-    date ||= Date.today
+    date ||= Date.current
     where('extract(year from record_at) = ? AND extract(month from record_at) = ?', date.year, date.month)
   end
 
   def self.week
-    date = Date.today
+    date = Date.current
     where('extract(year from record_at) = ? AND extract(week from record_at) = ?', date.year, date.cweek)
   end
 
-  def self.year
-    where('extract(year from record_at) = ?', Date.today.year)
+  def self.day
+    date = Date.current
+    where('extract(year from record_at) = ? AND extract(doy from record_at) = ?', date.year, date.yday)
   end
 end

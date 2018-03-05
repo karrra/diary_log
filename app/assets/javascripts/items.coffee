@@ -5,12 +5,47 @@ init_data = ()->
     success: (data)->
       eval(data)
 
+config = (dom, range)->
+  type: 'line',
+  data: {
+    labels: dom.data('labels'),
+    datasets: [
+      {
+        label: "支出",
+        data: dom.data('expense'),
+        backgroundColor: 'rgba(54, 162, 235, 0.5)' for x in [1..range]
+      },
+      {
+        label: "收入",
+        data: dom.data('incomes'),
+        backgroundColor: 'rgba(75, 192, 192, 0.5)' for x in [1..range]
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: "总支出(#{dom.data('total-expense')})元 / 总收入(#{dom.data('total-incomes')})元"
+    }
+    scales: {
+      xAxes: [{
+          stacked: true
+      }],
+      yAxes: [{
+          stacked: true
+      }]
+    }
+  }
+
+set_chart = ()->
+  monthly_temp = $.extend(true, {}, config($('#monthly_chart'), 12))
+  monthly_temp.type = 'bar'
+  monthly_chart = new Chart($('#monthly_chart'), monthly_temp)
 $ ->
   if $('.pagination').length > 0
     $(window).scroll ->
       url = $('.pagination .next_page').attr('href')
       if url && $(window).scrollTop() > $(document).height() - $(window).height() - 140
-        console.info url
         $('.pagination').text('fetching data.....')
         $.getScript(url)
 
@@ -43,3 +78,6 @@ $ ->
     $child = $('#item_child_type_id')
     $child.after("<input type='hidden' name='item[child_type_name]' value=#{$child.find('option:selected').text()} />")
     $(this).parent('form').submit()
+
+  if $('#monthly_chart').length > 0
+    set_chart()

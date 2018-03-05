@@ -5,7 +5,7 @@ class Bill < ActiveRecord::Base
   has_many :items
 
   def add_item(content, msg_id)
-    return false if Item.exists?(msg_id: msg_id)
+    return true if Item.exists?(msg_id: msg_id)
     i_type = QueryItemType.get(content)
     return false unless i_type
     memo, amount = content.split(' ')
@@ -19,7 +19,7 @@ class Bill < ActiveRecord::Base
         parent_type_name: i_type[:parent].name,
         child_type_id: i_type[:child].id,
         child_type_name: i_type[:child].name,
-        record_at: Time.now,
+        record_at: Time.current,
         inorout: i_type[:incomes],
         amount: amount,
         msg_id: msg_id
@@ -28,19 +28,13 @@ class Bill < ActiveRecord::Base
   end
 
   def total_expense(type='month')
-    if type == 'month'
-      items.expense.month.sum(:amount)
-    elsif type == 'week'
-      items.expense.week.sum(:amount)
-    end
+    the_items = items.expense
+    get_result(the_items, type)
   end
 
   def total_incomes(type='month')
-    if type == 'month'
-      items.incomes.month.sum(:amount)
-    elsif type == 'week'
-      items.incomes.week.sum(:amount)
-    end
+    the_items = items.incomes
+    get_result(the_items, type)
   end
 
   def weekly_report
@@ -48,5 +42,23 @@ class Bill < ActiveRecord::Base
     group_items.map do |k, v|
       "#{k}: #{v.sum(&:amount).round(2)} 元"
     end.join("\n")
+  end
+
+  def daily_report
+    group_items = items.expense.day.select(:parent_type_name, :amount).group_by(&:parent_type_name)
+    group_items.map do |k, v|
+      "#{k}: #{v.sum(&:amount).round(2)} 元"
+    end.join("\n")
+  end
+
+  def get_result(items, type)
+    case type
+    when 'month'
+      items.month.sum(:amount)
+    when 'week'
+      items.week.sum(:amount)
+    when 'day'
+      items.day.sum(:amount)
+    end
   end
 end

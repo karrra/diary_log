@@ -18,12 +18,14 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       when @keyword.match(/Po/)
         user.add_diary(@keyword)
         create_diary_response
-      when @keyword.match(/[Qq]/)
+      when @keyword.match(/^[Qq]$/)
         remove_item(bill.items.first)
-      when @keyword.match(/[Mm]/)
+      when @keyword.match(/^[Mm]$/)
         menu_response
-      when @keyword.match(/[Rr]/)
+      when @keyword.match(/^[Rr]$/)
         weekly_report(bill)
+      when @keyword.match(/^[Dd]$/)
+        daily_report(bill)
       else
         if bill.add_item(@keyword, @weixin_message.MsgId)
           item = bill.items.first
@@ -115,6 +117,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 淘宝 50
 ================
 输入Q即可删除上一条记录
+输入D即可查看日报
 输入R即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
@@ -125,13 +128,14 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     def add_item_response(item)
       str = <<-str
 ===== SUCCESS =====
-【时间】#{item.record_at.strftime('%m-%d %H:%m')}
+【时间】#{item.record_at.strftime('%m-%d %H:%M')}
 【金额】#{item.amount}
 【类别】#{item.parent_type_name} - #{item.child_type_name}
 【备注】#{item.memo}
 ==== 本月支出 #{item.bill.total_expense} 元 ====
 ==== 本月收入 #{item.bill.total_incomes} 元 ====
 输入Q即可删除上一条记录
+输入D即可查看日报
 输入R即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
@@ -149,6 +153,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 淘宝 50
 ================
 输入Q即可删除上一条记录
+输入D即可查看日报
 输入R即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
@@ -165,7 +170,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     end
 
     def menu_response
-      articles = [generate_report, generate_list]
+      articles = [generate_report, generate_list, generate_annual_report]
       reply_news_message(articles)
     end
 
@@ -175,6 +180,10 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
     def generate_report
       generate_article('账单统计', '账单统计', nil, "#{@base_url}/items/stat?open_id=#{@open_id}")
+    end
+
+    def generate_annual_report
+      generate_article('年度报表', '年度报表', nil, "#{@base_url}/items/annual_report?open_id=#{@open_id}")
     end
 
     def create_diary_response
@@ -188,13 +197,32 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     def weekly_report(bill)
       str = <<-str
 ===== Weekly Report =====
-【时间】#{Time.now.strftime("第%U周")}
+【时间】#{Time.current.strftime("第%U周")}
 【支出】#{bill.total_expense('week')} 元
 【收入】#{bill.total_incomes('week')} 元
 
 #{bill.weekly_report}
 =====================
 输入Q即可删除上一条记录
+输入D即可查看日报
+输入R即可查看周报
+输入M即可召唤菜单
+<a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
+      str
+      reply_text_message(str)
+    end
+
+    def daily_report(bill)
+      str = <<-str
+===== Daily Report =====
+【时间】#{Time.current.strftime("%-m-%d")}
+【支出】#{bill.total_expense('day')} 元
+【收入】#{bill.total_incomes('day')} 元
+
+#{bill.daily_report}
+=====================
+输入Q即可删除上一条记录
+输入D即可查看日报
 输入R即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口

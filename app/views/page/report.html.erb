@@ -1,0 +1,14 @@
+<div class="nav admin_report">
+  <div class="type_btn">
+    <button class="btn btn-default" role="line" type="button" name="button">Line</button>
+    <button class="btn btn-default" role="bar" type="button" name="button">Bar</button>
+  </div>
+  <h1>Day Report</h1>
+  <%= content_tag 'canvas', id: 'line_chart', data: {labels: @daily[:labels], expense: @daily[:expense], incomes: @daily[:incomes]} do %>
+    Loading chart...
+  <% end %>
+  <h1>Month Report</h1>
+  <%= content_tag 'canvas', id: 'stacked_bar', data: {labels: @monthly[:labels], expense: @monthly[:expense], incomes: @monthly[:incomes]} do %>
+    Loading chart...
+  <% end %>
+</div>

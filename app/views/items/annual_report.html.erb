@@ -1,0 +1,7 @@
+<div class="nav">
+  <h1>年度报表</h1>
+  <%= content_tag 'canvas', id: 'monthly_chart', data: {labels: @monthly[:labels], expense: @monthly[:expense],
+    incomes: @monthly[:incomes], total_expense: @total_expense, total_incomes: @total_incomes} do %>
+    Loading chart...
+  <% end %>
+</div>

@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20171018075207) do
   enable_extension "plpgsql"
 
   create_table "bills", force: :cascade do |t|
-    t.text     "user_id"
+    t.string   "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20171018075207) do
   end
 
   create_table "item_types", force: :cascade do |t|
-    t.text     "name"
+    t.string   "name"
     t.integer  "level"
     t.integer  "parent_id"
     t.datetime "created_at", null: false
@@ -40,17 +40,17 @@ ActiveRecord::Schema.define(version: 20171018075207) do
   create_table "items", force: :cascade do |t|
     t.integer  "bill_id"
     t.integer  "item_type"
-    t.text     "memo"
+    t.string   "memo"
     t.decimal  "amount",           precision: 6, scale: 1, default: 0.0
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
     t.integer  "parent_type_id"
-    t.text     "parent_type_name"
+    t.string   "parent_type_name"
     t.integer  "child_type_id"
-    t.text     "child_type_name"
+    t.string   "child_type_name"
     t.datetime "record_at"
     t.integer  "inorout"
-    t.text     "msg_id"
+    t.string   "msg_id"
   end
 
   create_table "user_activities", force: :cascade do |t|
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20171018075207) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.text     "open_id"
+    t.string   "open_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
