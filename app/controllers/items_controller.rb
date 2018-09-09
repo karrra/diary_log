@@ -1,5 +1,5 @@
 class ItemsController < ApplicationController
-  before_action :get_item, except: [:index, :stat, :fetch_data, :get_children_type, :annual_report]
+  before_action :get_item, only: [:edit, :update, :destroy]
 
   def index
     get_items
@@ -66,6 +66,16 @@ class ItemsController < ApplicationController
       labels: monthly_data.keys,
       expense: monthly_data.values.map{|i| i.inject(0){|sum, item| item.expense? ? sum + item.amount : sum}},
       incomes: monthly_data.values.map{|i| i.inject(0){|sum, item| item.incomes? ? sum + item.amount : sum}}
+    }
+  end
+
+  def weekly_report
+    items = @user.items.expense.quarter
+    weekly_data = items.group_by{|i| i.record_at.strftime('%W')}.reverse_each.to_h
+    @total_expense = items.sum(:amount)
+    @weekly = {
+      labels: weekly_data.keys.map{|week_number| Date.commercial(Date.current.year, week_number.to_i, 1).strftime('%-m/%-d')},
+      expense: weekly_data.values.map{|i| i.inject(0){|sum, item| sum + item.amount}},
     }
   end
 

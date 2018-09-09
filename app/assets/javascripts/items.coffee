@@ -37,10 +37,10 @@ config = (dom, range)->
     }
   }
 
-set_chart = ()->
-  monthly_temp = $.extend(true, {}, config($('#monthly_chart'), 12))
-  monthly_temp.type = 'bar'
-  monthly_chart = new Chart($('#monthly_chart'), monthly_temp)
+set_chart = (dom)->
+  duration_temp = $.extend(true, {}, config(dom, 12))
+  duration_temp.type = 'bar'
+  chart = new Chart(dom, duration_temp)
 $ ->
   if $('.pagination').length > 0
     $(window).scroll ->
@@ -80,4 +80,7 @@ $ ->
     $(this).parent('form').submit()
 
   if $('#monthly_chart').length > 0
-    set_chart()
+    set_chart($('#monthly_chart'))
+
+  if $('#weekly_chart').length > 0
+    set_chart($('#weekly_chart'))

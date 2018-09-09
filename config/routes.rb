@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       get :fetch_data
       get :get_children_type
       get :annual_report
+      get :weekly_report
     end
   end
   resources :diary_logs, except: [:new, :create, :show]

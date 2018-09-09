@@ -10,12 +10,16 @@ class Item < ActiveRecord::Base
   }
 
   def self.year
-    where('record_at > ?', Date.current - 12.months)
+    where('extract(year from record_at) = ?', Date.current.year)
   end
 
   def self.month(date=nil)
     date ||= Date.current
     where('extract(year from record_at) = ? AND extract(month from record_at) = ?', date.year, date.month)
+  end
+
+  def self.quarter
+    year.where('extract(month from record_at) in (?)', ApplicationController.helpers.get_months_number)
   end
 
   def self.week

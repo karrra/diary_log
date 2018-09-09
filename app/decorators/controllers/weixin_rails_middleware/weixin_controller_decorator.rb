@@ -22,7 +22,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
         remove_item(bill.items.first)
       when @keyword.match(/^[Mm]$/)
         menu_response
-      when @keyword.match(/^[Rr]$/)
+      when @keyword.match(/^[Ww]$/)
         weekly_report(bill)
       when @keyword.match(/^[Dd]$/)
         daily_report(bill)
@@ -118,7 +118,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 ================
 输入Q即可删除上一条记录
 输入D即可查看日报
-输入R即可查看周报
+输入W即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
@@ -136,7 +136,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 ==== 本月收入 #{item.bill.total_incomes} 元 ====
 输入Q即可删除上一条记录
 输入D即可查看日报
-输入R即可查看周报
+输入W即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
@@ -154,7 +154,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 ================
 输入Q即可删除上一条记录
 输入D即可查看日报
-输入R即可查看周报
+输入W即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
@@ -170,7 +170,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     end
 
     def menu_response
-      articles = [generate_report, generate_list, generate_annual_report]
+      articles = [generate_report, generate_list, generate_annual_report, generate_weekly_report]
       reply_news_message(articles)
     end
 
@@ -184,6 +184,10 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
     def generate_annual_report
       generate_article('年度报表', '年度报表', nil, "#{@base_url}/items/annual_report?open_id=#{@open_id}")
+    end
+
+    def generate_weekly_report
+      generate_article('周报表', '周报表', nil, "#{@base_url}/items/weekly_report?open_id=#{@open_id}")
     end
 
     def create_diary_response
@@ -205,7 +209,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 =====================
 输入Q即可删除上一条记录
 输入D即可查看日报
-输入R即可查看周报
+输入W即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str
@@ -223,7 +227,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 =====================
 输入Q即可删除上一条记录
 输入D即可查看日报
-输入R即可查看周报
+输入W即可查看周报
 输入M即可召唤菜单
 <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
       str

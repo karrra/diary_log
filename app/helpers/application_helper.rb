@@ -15,4 +15,12 @@ module ApplicationHelper
     end
   end
 
+  def get_months_number
+    result = []
+    3.times.each do |i|
+      result << (Date.current - i.month).month
+    end
+    result
+  end
+
 end
