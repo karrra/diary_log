@@ -59,24 +59,12 @@ class ItemsController < ApplicationController
 
   def annual_report
     items = @user.items.year
-    monthly_data = items.group_by{|i| i.record_at.strftime('%b')}.reverse_each.to_h
-    @total_expense = items.expense.sum(:amount)
-    @total_incomes = items.incomes.sum(:amount)
-    @monthly = {
-      labels: monthly_data.keys,
-      expense: monthly_data.values.map{|i| i.inject(0){|sum, item| item.expense? ? sum + item.amount : sum}},
-      incomes: monthly_data.values.map{|i| i.inject(0){|sum, item| item.incomes? ? sum + item.amount : sum}}
-    }
+    @monthly = fetch_chart_data(items, 'monthly')
   end
 
-  def weekly_report
-    items = @user.items.expense.quarter
-    weekly_data = items.group_by{|i| i.record_at.strftime('%W')}.reverse_each.to_h
-    @total_expense = items.sum(:amount)
-    @weekly = {
-      labels: weekly_data.keys.map{|week_number| Date.commercial(Date.current.year, week_number.to_i, 1).strftime('%-m/%-d')},
-      expense: weekly_data.values.map{|i| i.inject(0){|sum, item| sum + item.amount}},
-    }
+  def quarterly_report
+    items = @user.items.quarter
+    @weekly = fetch_chart_data(items, 'weekly')
   end
 
   private
@@ -106,5 +94,18 @@ class ItemsController < ApplicationController
   def set_inorout(item)
     item.inorout = item.parent_type_name == '收入' ? 'incomes' : 'expense'
     item.save
+  end
+
+  def fetch_chart_data(items, type)
+    data = items.group_by{|i| type == 'monthly' ? i.record_at.strftime('%b') : i.record_at.strftime('%W')}.reverse_each.to_h
+    @total_expense = items.expense.sum(:amount)
+    @total_incomes = items.incomes.sum(:amount)
+
+    labels = type == 'monthly' ? data.keys : data.keys.map{|week_number| Date.commercial(Date.current.year, week_number.to_i, 1).strftime('%-m/%-d')}
+    {
+      labels: labels,
+      expense: data.values.map{|i| i.inject(0){|sum, item| item.expense? ? sum + item.amount : sum}},
+      incomes: data.values.map{|i| i.inject(0){|sum, item| item.incomes? ? sum + item.amount : sum}}
+    }
   end
 end

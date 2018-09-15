@@ -170,7 +170,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     end
 
     def menu_response
-      articles = [generate_report, generate_list, generate_annual_report, generate_weekly_report]
+      articles = [generate_report, generate_list, generate_annual_report, generate_quarterly_report]
       reply_news_message(articles)
     end
 
@@ -186,8 +186,8 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       generate_article('年度报表', '年度报表', nil, "#{@base_url}/items/annual_report?open_id=#{@open_id}")
     end
 
-    def generate_weekly_report
-      generate_article('周报表', '周报表', nil, "#{@base_url}/items/weekly_report?open_id=#{@open_id}")
+    def generate_quarterly_report
+      generate_article('季度报表', '季度报表', nil, "#{@base_url}/items/quarterly_report?open_id=#{@open_id}")
     end
 
     def create_diary_response

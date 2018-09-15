@@ -1,0 +1,7 @@
+<div class="nav">
+  <h1>季度报表</h1>
+  <%= content_tag 'canvas', id: 'weekly_chart', data: {labels: @weekly[:labels], expense: @weekly[:expense],
+    incomes: @weekly[:incomes], total_expense: @total_expense, total_incomes: @total_incomes} do %>
+    Loading chart...
+  <% end %>
+</div>
