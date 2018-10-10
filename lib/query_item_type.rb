@@ -2,7 +2,7 @@ require 'uri'
 require 'net/http'
 
 module QueryItemType
-  URL = 'http://duo.qq.com/api/semantic?type=text&ctx='
+  URL = 'https://duo.qq.com/api/semantic?type=text&ctx='
 
   def get(content)
     begin
@@ -22,7 +22,8 @@ module QueryItemType
         child: child_type,
         incomes: parent_type.name == '收入' ? 1 : 0
       }
-    rescue
+    rescue => e
+      Rails.logger.error "======error: #{e}"
       nil
     end
   end
