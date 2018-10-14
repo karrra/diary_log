@@ -20,8 +20,6 @@ WeixinRailsMiddleware::WeixinController.class_eval do
         create_diary_response
       when @keyword.match(/^[Qq]$/)
         remove_item(bill.items.first)
-      when @keyword.match(/^[Mm]$/)
-        menu_response
       when @keyword.match(/^[Ww]$/)
         weekly_report(bill)
       when @keyword.match(/^[Dd]$/)
@@ -116,11 +114,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 打车 20
 淘宝 50
 ================
-输入Q即可删除上一条记录
-输入D即可查看日报
-输入W即可查看周报
-输入M即可召唤菜单
-<a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
+#{help_info}
       str
       reply_text_message(str)
     end
@@ -134,11 +128,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 【备注】#{item.memo}
 ==== 本月支出 #{item.bill.total_expense} 元 ====
 ==== 本月收入 #{item.bill.total_incomes} 元 ====
-输入Q即可删除上一条记录
-输入D即可查看日报
-输入W即可查看周报
-输入M即可召唤菜单
-<a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
+#{help_info}
       str
       reply_text_message(str)
     end
@@ -152,11 +142,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 打车 20
 淘宝 50
 ================
-输入Q即可删除上一条记录
-输入D即可查看日报
-输入W即可查看周报
-输入M即可召唤菜单
-<a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
+#{help_info}
       str
       reply_text_message(str)
     end
@@ -167,27 +153,6 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       else
         reply_text_message("删除失败，请重试")
       end
-    end
-
-    def menu_response
-      articles = [generate_report, generate_list, generate_annual_report, generate_quarterly_report]
-      reply_news_message(articles)
-    end
-
-    def generate_list
-      generate_article('账单明细', '账单明细', nil, "#{@base_url}/items?open_id=#{@open_id}")
-    end
-
-    def generate_report
-      generate_article('账单统计', '账单统计', nil, "#{@base_url}/items/stat?open_id=#{@open_id}")
-    end
-
-    def generate_annual_report
-      generate_article('年度报表', '年度报表', nil, "#{@base_url}/items/annual_report?open_id=#{@open_id}")
-    end
-
-    def generate_quarterly_report
-      generate_article('季度报表', '季度报表', nil, "#{@base_url}/items/quarterly_report?open_id=#{@open_id}")
     end
 
     def create_diary_response
@@ -207,11 +172,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
 #{bill.weekly_report}
 =====================
-输入Q即可删除上一条记录
-输入D即可查看日报
-输入W即可查看周报
-输入M即可召唤菜单
-<a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
+#{help_info}
       str
       reply_text_message(str)
     end
@@ -225,12 +186,20 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
 #{bill.daily_report}
 =====================
+#{help_info}
+      str
+      reply_text_message(str)
+    end
+
+    def help_info
+      <<-str
 输入Q即可删除上一条记录
 输入D即可查看日报
 输入W即可查看周报
-输入M即可召唤菜单
-<a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a>快捷入口
+>>>>>> <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a> <<<<<<
+>>>>>> <a href='#{@base_url}/items/stat?open_id=#{@open_id}'>账单统计</a> <<<<<<
+>>>>>> <a href='#{@base_url}/items/annual_report?open_id=#{@open_id}'>年度报表</a> <<<<<<
+>>>>>> <a href='#{@base_url}/items/quarterly_report?open_id=#{@open_id}'>季度报表</a> <<<<<<
       str
-      reply_text_message(str)
     end
 end
