@@ -2,7 +2,7 @@ require 'uri'
 require 'net/http'
 
 module QueryItemType
-  URL = 'https://duo.qq.com/api/semantic?type=text&ctx='
+  URL = 'http://duo.qq.com/api/semantic?type=text&ctx='
 
   def get(content)
     begin
