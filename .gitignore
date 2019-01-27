@@ -15,6 +15,7 @@
 !/log/.keep
 /tmp
 .ruby-version
+.ruby-gemset
 .DS_Store
 */.DS_Store
 /config/newrelic.yml

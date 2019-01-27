@@ -19,7 +19,7 @@ class Item < ActiveRecord::Base
   end
 
   def self.quarter
-    year.where('extract(month from record_at) in (?)', ApplicationController.helpers.get_months_number)
+    where('record_at > ?', Time.current.at_beginning_of_month - 2.months)
   end
 
   def self.week

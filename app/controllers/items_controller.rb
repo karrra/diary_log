@@ -97,11 +97,11 @@ class ItemsController < ApplicationController
   end
 
   def fetch_chart_data(items, type)
-    data = items.group_by{|i| type == 'monthly' ? i.record_at.strftime('%b') : i.record_at.strftime('%W')}.reverse_each.to_h
+    data = items.group_by{|i| type == 'monthly' ? i.record_at.strftime('%b') : i.record_at.strftime("%G-%V")}.reverse_each.to_h
     @total_expense = items.expense.sum(:amount)
     @total_incomes = items.incomes.sum(:amount)
 
-    labels = type == 'monthly' ? data.keys : data.keys.map{|week_number| Date.commercial(Date.current.year, week_number.to_i, 1).strftime('%-m/%-d')}
+    labels = type == 'monthly' ? data.keys : data.keys.map{|i| year, week = i.split('-'); Date.commercial(year.to_i, week.to_i, 1).strftime('%-m/%-d')}
     {
       labels: labels,
       expense: data.values.map{|i| i.inject(0){|sum, item| item.expense? ? sum + item.amount : sum}},
