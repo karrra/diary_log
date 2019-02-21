@@ -12,7 +12,7 @@ module MyBill
     config.load_defaults 5.0
     config.autoload_paths += %W(#{config.root}/lib)
 
-    config.time_zone = 'Beijing'
+    config.time_zone = 'Sydney'
     config.i18n.default_locale = :'zh-CN'
   end
 end
