@@ -3,7 +3,7 @@ module ItemsHelper
     icon =
       case item_type
       when '餐饮'
-        'fa-cutlery'
+        'fa-coffee'
       when '购物消费'
         'fa-shopping-cart'
       when '居家生活'
@@ -11,13 +11,13 @@ module ItemsHelper
       when '交通费'
         'fa-train'
       when '休闲娱乐'
-        'fa-music'
+        'fa-gamepad'
       when '健康医疗'
         'fa-hospital-o'
       when '文化教育'
         'fa-book'
       when '收入'
-        'fa-money'
+        'fa-money-bill-alt'
       else
         'fa-credit-card'
       end
