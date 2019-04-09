@@ -9,12 +9,3 @@ append :linked_files, "config/database.yml", "config/secrets.yml", "config/newre
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets"
 
 after 'deploy:finishing', 'deploy:cleanup'
-after 'deploy:publishing', 'deploy:restart'
-
-namespace :deploy do
-  task :restart do
-    invoke 'unicorn:stop'
-    sleep 5
-    invoke 'unicorn:start'
-  end
-end

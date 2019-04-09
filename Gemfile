@@ -12,7 +12,7 @@ gem 'bootstrap-sass'
 gem 'font-awesome-sass'
 gem 'simple_form'
 gem 'weixin_rails_middleware', git: "https://github.com/lanrion/weixin_rails_middleware.git"
-gem 'unicorn'
+gem 'puma'
 gem 'newrelic_rpm'
 gem 'rails-i18n'
 gem 'momentjs-rails'
@@ -34,5 +34,5 @@ group :development do
   gem 'capistrano-rails', require: false
   gem 'capistrano-rvm'
   gem 'capistrano-bundler', require: false
-  gem 'capistrano3-unicorn'
+  gem 'capistrano3-puma'
 end
