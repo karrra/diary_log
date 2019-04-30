@@ -23,7 +23,7 @@ module QueryItemType
         incomes: parent_type.name == '收入' ? 1 : 0
       }
     rescue => e
-      Rails.logger.error "======error: #{e}"
+      Rails.logger.error "======query item type error: #{e}"
       nil
     end
   end

@@ -2,6 +2,8 @@
 # 1, @weixin_message: 获取微信所有参数.
 # 2, @weixin_public_account: 如果配置了public_account_class选项,则会返回当前实例,否则返回nil.
 # 3, @keyword: 目前微信只有这三种情况存在关键字: 文本消息, 事件推送, 接收语音识别结果
+include QueryWords
+
 WeixinRailsMiddleware::WeixinController.class_eval do
   before_action :get_open_id, :get_base_url
 
@@ -18,6 +20,8 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       when @keyword.match(/Po/)
         user.add_diary(@keyword)
         create_diary_response
+      when @keyword.match(/Tr/)
+        translate_words(@keyword)
       when @keyword.match(/^[Qq]$/)
         remove_item(bill.items.first)
       when @keyword.match(/^[Ww]$/)
@@ -156,11 +160,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     end
 
     def create_diary_response
-      str = <<-str
-心情已记录!
-<a href='#{@base_url}/diary_logs?open_id=#{@open_id}'>心情列表</a>快捷入口
-      str
-      reply_text_message(str)
+      reply_text_message(心情已记录!)
     end
 
     def weekly_report(bill)
@@ -201,5 +201,9 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 >>>>>> <a href='#{@base_url}/items/annual_report?open_id=#{@open_id}'>年度报表</a> <<<<<<
 >>>>>> <a href='#{@base_url}/items/quarterly_report?open_id=#{@open_id}'>季度报表</a> <<<<<<
       str
+    end
+
+    def translate_words(context)
+      QueryWords.quick_search(context) || ''
     end
 end

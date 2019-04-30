@@ -20,6 +20,7 @@ gem 'bootstrap3-datetimepicker-rails'
 gem 'redis-rails'
 gem 'will_paginate'
 gem 'bootsnap', '>= 1.1.0', require: false
+gem 'faraday'
 
 group :development, :test do
   gem 'byebug'
