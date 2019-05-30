@@ -8,4 +8,14 @@ set :deploy_to, "/home/deploy/diary_logs"
 append :linked_files, "config/database.yml", "config/secrets.yml", "config/newrelic.yml"
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets"
 
-after 'deploy:finishing', 'deploy:cleanup'
+namespace :deploy do
+  desc 'restart application'
+  task :restart do
+    invoke 'puma:stop'
+    sleep 2
+    invoke 'puma:start'
+  end
+
+  after :finishing, :cleanup
+  after :finishing, :restart
+end
