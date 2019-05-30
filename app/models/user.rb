@@ -4,7 +4,10 @@ class User < ActiveRecord::Base
   has_many :diary_logs
   has_many :user_activities
 
-  def add_diary(content)
-    diary_logs.create(content: content.sub(/Po /, ''))
+  after_commit :attach_bill
+
+  private
+  def attach_bill
+    self.create_bill
   end
 end

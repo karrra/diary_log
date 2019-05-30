@@ -13,24 +13,17 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
     def response_text_message(options={})
       user = User.where(open_id: @open_id).first_or_create
-      bill = Bill.where(user_id: user.id).first_or_create
+      @bill = user.bill
+
       case
-      when @keyword.match(/Po/)
-        user.add_diary(@keyword)
-        create_diary_response
       when @keyword.match(/^[Qq]$/)
-        remove_item(bill.items.first)
+        remove_item
       when @keyword.match(/^[Ww]$/)
-        weekly_report(bill)
+        weekly_report
       when @keyword.match(/^[Dd]$/)
-        daily_report(bill)
+        daily_report
       else
-        if bill.add_item(@keyword, @weixin_message.MsgId)
-          item = bill.items.first
-          add_item_response(item)
-        else
-          reply_error_msg
-        end
+        add_item
       end
     end
 
@@ -119,6 +112,14 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       reply_text_message(str)
     end
 
+    def add_item
+      if item = @bill.add_item(@keyword, @weixin_message.MsgId)
+        add_item_response(item)
+      else
+        reply_error_msg
+      end
+    end
+
     def add_item_response(item)
       str = <<-str
 ===== SUCCESS =====
@@ -147,7 +148,8 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       reply_text_message(str)
     end
 
-    def remove_item(item)
+    def remove_item
+      item = @bill.items.first
       if item.destroy
         reply_text_message("删除成功:)")
       else
@@ -155,34 +157,26 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       end
     end
 
-    def create_diary_response
-      str = <<-str
-心情已记录!
-<a href='#{@base_url}/diary_logs?open_id=#{@open_id}'>心情列表</a>快捷入口
-      str
-      reply_text_message(str)
-    end
-
-    def weekly_report(bill)
+    def weekly_report
       str = <<-str
 ===== Weekly Report =====
 【时间】#{Time.current.strftime("第%U周")}
-【支出】#{bill.total_expense('week')} 元
-【收入】#{bill.total_incomes('week')} 元
+【支出】#{@bill.total_expense('week')} 元
+【收入】#{@bill.total_incomes('week')} 元
 
-#{bill.weekly_report}
+#{@bill.weekly_report}
 =====================
 #{help_info}
       str
       reply_text_message(str)
     end
 
-    def daily_report(bill)
+    def daily_report
       str = <<-str
 ===== Daily Report =====
 【时间】#{Time.current.strftime("%-m-%d")}
-【支出】#{bill.total_expense('day')} 元
-【收入】#{bill.total_incomes('day')} 元
+【支出】#{@bill.total_expense('day')} 元
+【收入】#{@bill.total_incomes('day')} 元
 
 #{bill.daily_report}
 =====================

@@ -11,6 +11,11 @@ module QueryItemType
           'parent_category_name' => '收入',
           'child_category_name' => '羊毛'
         }
+      elsif item = Item.find_by(memo: content.split(' ').first)
+        data = {
+          'parent_category_name' => item.parent_type_name,
+          'child_category_name' => item.child_type_name
+        }
       else
         response = Net::HTTP.get(URI.parse(URI::escape(URL + content)))
         data = JSON.parse(response)['data']

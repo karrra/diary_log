@@ -5,20 +5,23 @@ class Bill < ActiveRecord::Base
   has_many :items
 
   def add_item(content, msg_id)
-    return true if Item.exists?(msg_id: msg_id)
+    return item if item = Item.find_by(msg_id: msg_id)
     i_type = QueryItemType.get(content)
     return false unless i_type
     memo, amount = content.split(' ')
     return false unless amount
 
+    parent = i_type[:parent]
+    child = i_type[:child]
+
     Item.transaction do
       Item.create(
         bill_id: self.id,
         memo: memo,
-        parent_type_id: i_type[:parent].id,
-        parent_type_name: i_type[:parent].name,
-        child_type_id: i_type[:child].id,
-        child_type_name: i_type[:child].name,
+        parent_type_id: parent.id,
+        parent_type_name: parent.name,
+        child_type_id: child.id,
+        child_type_name: child.name,
         record_at: Time.current,
         inorout: i_type[:incomes],
         amount: amount,
