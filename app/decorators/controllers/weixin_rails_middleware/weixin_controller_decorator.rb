@@ -127,8 +127,8 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 【金额】#{item.amount}
 【类别】#{item.parent_type_name} - #{item.child_type_name}
 【备注】#{item.memo}
-=== 本月支出 #{item.bill.total_expense} 元 ===
-=== 本月收入 #{item.bill.total_incomes} 元 ===
+=== 本月支出 #{@bill.total_expense} 元 ===
+=== 本月收入 #{@bill.total_incomes} 元 ===
 #{help_info}
       str
       reply_text_message(str)
@@ -178,7 +178,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 【支出】#{@bill.total_expense('day')} 元
 【收入】#{@bill.total_incomes('day')} 元
 
-#{bill.daily_report}
+#{@bill.daily_report}
 =====================
 #{help_info}
       str

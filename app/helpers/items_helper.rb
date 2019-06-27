@@ -13,7 +13,7 @@ module ItemsHelper
       when '休闲娱乐'
         'fa-gamepad'
       when '健康医疗'
-        'fa-hospital-o'
+        'fa-hospital'
       when '文化教育'
         'fa-book'
       when '收入'
