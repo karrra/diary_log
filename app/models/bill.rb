@@ -64,4 +64,12 @@ class Bill < ActiveRecord::Base
       items.day.sum(:amount)
     end
   end
+
+  def search_report(q)
+    q = q.split(' ').last
+    data = items.where("memo LIKE ?", "%#{q}%").order(record_at: :desc).limit(10)
+    data.map do |i|
+      "#{i.record_at.strftime("%-m-%d")}: #{i.memo} #{i.amount}元"
+    end.join("\n")
+  end
 end

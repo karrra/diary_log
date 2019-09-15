@@ -22,6 +22,8 @@ WeixinRailsMiddleware::WeixinController.class_eval do
         weekly_report
       when @keyword.match(/^[Dd]$/)
         daily_report
+      when @keyword.match(/^[Ss]/)
+        search_report
       else
         add_item
       end
@@ -185,11 +187,21 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       reply_text_message(str)
     end
 
+    def search_report
+      str = <<-str
+===== Search Report =====
+#{@bill.search_report(@keyword)}
+=====================
+      str
+      reply_text_message(str)
+    end
+
     def help_info
       <<-str
 输入Q即可删除上一条记录
 输入D即可查看日报
 输入W即可查看周报
+输入S 内容可以搜索所有相关条目
 >>>>>> <a href='#{@base_url}/items?open_id=#{@open_id}'>账单明细</a> <<<<<<
 >>>>>> <a href='#{@base_url}/items/stat?open_id=#{@open_id}'>账单统计</a> <<<<<<
 >>>>>> <a href='#{@base_url}/items/annual_report?open_id=#{@open_id}'>年度报表</a> <<<<<<
